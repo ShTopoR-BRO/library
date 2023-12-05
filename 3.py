@@ -30,7 +30,8 @@ print(x[c], x[e])
 #     elif x[i] < x[e] and x[i] != x[c]:    
 #         e = i
    
-# print(x[c], x[e])      
+# print(x[c], x[e]) 
+print(1, 2, 3)
     
     
     
