@@ -31,7 +31,8 @@ print(x[c], x[e])
 #         e = i
    
 # print(x[c], x[e]) 
-print(1, 2, 3)
+def test():
+    print(1,2,3)
     
     
     
