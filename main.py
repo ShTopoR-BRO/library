@@ -1,10 +1,14 @@
 from flask import Flask, request
 from flask import jsonify
 import psycopg2
+import os
+from connection import DataBase
 
-connection = psycopg2.connect(user="postgres",password="190687",host="127.0.0.1",port="5432",database="library")
+#connection = psycopg2.connect(user="postgres",password="190687",host="127.0.0.1",port="5432",database="library")
+# connection = DataBase(os.getenv("POSTGRES_DB"), os.getenv("POSTGRES_USER"),os.getenv("POSTGRES_PASSWORD"), os.getenv("POSTGRES_HOST"), os.getenv("POSTGRES_PORT"))
+from dotenv import load_dotenv
 
-
+load_dotenv()
 
 app = Flask(__name__)
 
@@ -16,9 +20,10 @@ def show_books():
             id = data["id"]
             book_name = data["book_name"]
             author = data["author"]
+            #connection = psycopg2.connect(user="postgres",password="190687",host="127.0.0.1",port="5432",database="library")
+            database = DataBase(os.getenv("POSTGRES_DB"), os.getenv("POSTGRES_USER"),os.getenv("POSTGRES_PASSWORD"), os.getenv("POSTGRES_HOST"), os.getenv("POSTGRES_PORT"))
+            connection = database.connect()
             
-            connection = psycopg2.connect(user="postgres",password="190687",host="127.0.0.1",port="5432",database="library")
-
             cursor = connection.cursor()
             cursor.execute("INSERT INTO books VALUES(%s,%s,%s)", (id, book_name, author))
             connection.commit()
@@ -30,7 +35,9 @@ def show_books():
             return {"massenge":"oops"}
         
     elif request.method == "GET":
-        connection = psycopg2.connect(user="postgres",password="190687",host="127.0.0.1",port="5432",database="library")
+        # connection = psycopg2.connect(user="postgres",password="190687",host="127.0.0.1",port="5432",database="library")
+        database = DataBase(os.getenv("POSTGRES_DB"), os.getenv("POSTGRES_USER"),os.getenv("POSTGRES_PASSWORD"), os.getenv("POSTGRES_HOST"), os.getenv("POSTGRES_PORT"))
+        connection = database.connect()
         cursor = connection.cursor()
         cursor.execute("SELECT * FROM books")
         q = cursor.fetchall()
@@ -41,7 +48,9 @@ def show_books():
     
 @app.route('/api/books/<int:post_id>', methods = ["DELETE"])
 def delete_book(post_id):
-    connection = psycopg2.connect(user="postgres",password="190687",host="127.0.0.1",port="5432",database="library")
+    # connection = psycopg2.connect(user="postgres",password="190687",host="127.0.0.1",port="5432",database="library")
+    database = DataBase(os.getenv("POSTGRES_DB"), os.getenv("POSTGRES_USER"),os.getenv("POSTGRES_PASSWORD"), os.getenv("POSTGRES_HOST"), os.getenv("POSTGRES_PORT"))
+    connection = database.connect()
     cursor = connection.cursor()
     cursor.execute("DELETE FROM books WHERE id = %s",(post_id,))
     connection.commit()
@@ -51,7 +60,9 @@ def delete_book(post_id):
     
 @app.route('/api/books/<int:book_id>', methods = ["GET"])
 def show_book(book_id): 
-    connection = psycopg2.connect(user="postgres",password="190687",host="127.0.0.1",port="5432",database="library")
+    #connection = psycopg2.connect(user="postgres",password="190687",host="127.0.0.1",port="5432",database="library")
+    database = DataBase(os.getenv("POSTGRES_DB"), os.getenv("POSTGRES_USER"),os.getenv("POSTGRES_PASSWORD"), os.getenv("POSTGRES_HOST"), os.getenv("POSTGRES_PORT"))
+    connection = database.connect()
     cursor = connection.cursor()
     cursor.execute("SELECT * FROM books WHERE id= %s", (book_id,))
     q = cursor.fetchall()
@@ -65,7 +76,9 @@ def update_book(book_id):
     data = request.get_json()
     book_name = data.get("book_name")
     if book_name is not None:
-        connection = psycopg2.connect(user="postgres",password="190687",host="127.0.0.1",port="5432",database="library")
+        #connection = psycopg2.connect(user="postgres",password="190687",host="127.0.0.1",port="5432",database="library")
+        database = DataBase(os.getenv("POSTGRES_DB"), os.getenv("POSTGRES_USER"),os.getenv("POSTGRES_PASSWORD"), os.getenv("POSTGRES_HOST"), os.getenv("POSTGRES_PORT"))
+        connection = database.connect()
         cursor = connection.cursor()
         cursor.execute("UPDATE books SET book_name = %s WHERE id = %s", (book_name, book_id))
         connection.commit()
@@ -73,7 +86,9 @@ def update_book(book_id):
         connection.close()
     author = data.get("author")    
     if author is not None:
-        connection = psycopg2.connect(user="postgres",password="190687",host="127.0.0.1",port="5432",database="library")
+        #connection = psycopg2.connect(user="postgres",password="190687",host="127.0.0.1",port="5432",database="library")
+        database = DataBase(os.getenv("POSTGRES_DB"), os.getenv("POSTGRES_USER"),os.getenv("POSTGRES_PASSWORD"), os.getenv("POSTGRES_HOST"), os.getenv("POSTGRES_PORT"))
+        connection = database.connect()
         cursor = connection.cursor()        
         cursor.execute("UPDATE books SET author = %s WHERE id = %s", (author, book_id))
         connection.commit()
@@ -81,7 +96,9 @@ def update_book(book_id):
         connection.close()
     id = data.get("id")
     if id is not None:
-        connection = psycopg2.connect(user="postgres",password="190687",host="127.0.0.1",port="5432",database="library")
+        #connection = psycopg2.connect(user="postgres",password="190687",host="127.0.0.1",port="5432",database="library")
+        database = DataBase(os.getenv("POSTGRES_DB"), os.getenv("POSTGRES_USER"),os.getenv("POSTGRES_PASSWORD"), os.getenv("POSTGRES_HOST"), os.getenv("POSTGRES_PORT"))
+        connection = database.connect()
         cursor = connection.cursor()
         cursor.execute("UPDATE books SET id = %s WHERE id = %s", (id ,book_id))
         connection.commit()
@@ -93,3 +110,6 @@ def update_book(book_id):
 
 if __name__ == '__main__':
     app.run()
+    
+    
+# D/Z def create_book(id,book_name,author)    
