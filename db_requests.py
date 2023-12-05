@@ -8,4 +8,6 @@ class Req:
     def show_for_author(self):
         self.cur.execute("""SELECT * FROM books WHERE author=%""", (author,))
         result = self.cur.fetchall()
-        return result    
+        return result 
+
+print("H")   
